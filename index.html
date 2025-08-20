@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bases de Datos SQL - Guía Completa</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 0.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        nav {
+            background-color: var(--dark-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0;
+        }
+        
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        section {
+            background-color: white;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .card {
+            background-color: var(--light-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 4px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        .acid-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .acid-item {
+            flex: 1 1 200px;
+            background-color: var(--light-color);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .acid-item h4 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .table-example {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .table-example th, .table-example td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .table-example th {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .table-example tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .sql-example {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: monospace;
+        }
+        
+        .keyword {
+            color: #f92672;
+        }
+        
+        .function {
+            color: #66d9ef;
+        }
+        
+        .string {
+            color: #a6e22e;
+        }
+        
+        .reference {
+            background-color: var(--light-color);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+        
+        .reference h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav a {
+                text-align: center;
+            }
+            
+            .acid-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Bases de Datos SQL</h1>
+            <p>Todo lo que necesitas saber sobre bases de datos relacionales</p>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#introduccion">Introducción</a></li>
+            <li><a href="#modelo">Modelo Relacional</a></li>
+            <li><a href="#esquema">Esquema</a></li>
+            <li><a href="#integridad">Integridad de Datos</a></li>
+            <li><a href="#sql">Lenguaje SQL</a></li>
+            <li><a href="#acid">Propiedades ACID</a></li>
+            <li><a href="#escalabilidad">Escalabilidad</a></li>
+            <li><a href="#casos-uso">Casos de Uso</a></li>
+            <li><a href="#referencias">Referencias</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="introduccion">
+            <h2>Introducción a las Bases de Datos SQL</h2>
+            <p>Las bases de datos SQL, también conocidas como <strong>bases de datos relacionales</strong>, son sistemas que organizan la información de manera estructurada y tabular, priorizando la integridad de los datos y la consistencia.</p>
+            <p>Estos sistemas almacenan datos en tablas compuestas por filas y columnas, donde cada fila representa un registro y cada columna representa un atributo de ese registro.</p>
+        </section>
+        
+        <section id="modelo">
+            <h2>Modelo y Estructura Relacional</h2>
+            <p>El modelo relacional fue propuesto por Edgar Frank Codd en 1970 como una solución a los problemas inherentes de las bases de datos de red y jerárquicas.</p>
+            
+            <h3>Componentes principales:</h3>
+            <div class="card-container">
+                <div class="card">
+                    <h3>Tablas</h3>
+                    <p>Estructuras que contienen los datos organizados en filas y columnas, similares a hojas de cálculo.</p>
+                </div>
+                <div class="card">
+                    <h3>Filas (Registros)</h3>
+                    <p>Cada fila representa una entidad o elemento único en la tabla.</p>
+                </div>
+                <div class="card">
+                    <h3>Columnas (Atributos)</h3>
+                    <p>Cada columna representa una característica o propiedad de las entidades.</p>
+                </div>
+            </div>
+            
+            <h3>Ejemplo de una tabla:</h3>
+            <table class="table-example">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Edad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Juan Pérez</td>
+                        <td>juan@email.com</td>
+                        <td>28</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>María García</td>
+                        <td>maria@email.com</td>
+                        <td>32</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Carlos López</td>
+                        <td>carlos@email.com</td>
+                        <td>25</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section id="esquema">
+            <h2>Esquema Fijo y Predefinido</h2>
+            <p>Las bases de datos SQL tienen un <strong>esquema fijo y predefinido</strong>, lo que significa que la estructura de la tabla (columnas y sus tipos de datos) debe definirse antes de insertar los datos.</p>
+            
+            <div class="card">
+                <h3>Nota sobre la flexibilidad del esquema</h3>
+                <p>Aunque algunas fuentes mencionan que SQL posee un "esquema flexible", esta afirmación <strong>contradice el consenso general</strong>. La flexibilidad de esquema es, de hecho, una característica distintiva de las bases de datos NoSQL.</p>
+            </div>
+            
+            <h3>Ventajas del esquema predefinido:</h3>
+            <ul>
+                <li>Mayor integridad de datos</li>
+                <li>Mejor rendimiento para aplicaciones transaccionales</li>
+                <li>Validación de tipos de datos</li>
+                <li>Estructura consistente y predecible</li>
+            </ul>
+        </section>
+        
+        <section id="integridad">
+            <h2>Integridad de Datos y Normalización</h2>
+            <p>Una de las principales prioridades de las bases de datos SQL es la <strong>integridad de los datos</strong>. Para lograr esto:</p>
+            <ul>
+                <li>La información se almacena en <strong>tablas separadas para cada entidad</strong></li>
+                <li>Las relaciones entre tablas se establecen mediante <strong>claves foráneas (Foreign Keys)</strong></li>
+                <li>Se aplica el proceso de <strong>normalización</strong> para evitar anomalías, reducir la redundancia y proteger la integridad</li>
+            </ul>
+            
+            <h3>Normalización</h3>
+            <p>La normalización implica organizar los datos para cumplir con las formas normales. Se recomienda aplicar al menos hasta la <strong>tercera forma normal</strong>:</p>
+            
+            <div class="card-container">
+                <div class="card">
+                    <h3>Primera Forma Normal (1FN)</h3>
+                    <p>Todos los campos deben ser atómicos (almacenar un solo valor) y la tabla debe tener una clave primaria.</p>
+                </div>
+                <div class="card">
+                    <h3>Segunda Forma Normal (2FN)</h3>
+                    <p>Debe estar en 1FN y todos los campos no clave deben depender completamente de la clave primaria.</p>
+                </div>
+                <div class="card">
+                    <h3>Tercera Forma Normal (3FN)</h3>
+                    <p>Debe estar en 2FN y eliminar las dependencias transitivas (los campos no clave no deben depender de otros campos no clave).</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="sql">
+            <h2>Lenguaje de Consulta Estructurado (SQL)</h2>
+            <p>SQL es un <strong>lenguaje declarativo de "alto nivel"</strong> que se utiliza para consultar, manipular y controlar los datos en bases de datos relacionales.</p>
+            
+            <h3>Componentes del SQL:</h3>
+            <div class="card-container">
+                <div class="card">
+                    <h3>DDL (Data Definition Language)</h3>
+                    <p>Para definir la estructura de la base de datos: crear, modificar o eliminar tablas y otros objetos.</p>
+                    <div class="sql-example">
+                        <span class="keyword">CREATE TABLE</span> Clientes (<br>
+                        &nbsp;&nbsp;id <span class="keyword">INT PRIMARY KEY</span>,<br>
+                        &nbsp;&nbsp;nombre <span class="keyword">VARCHAR</span>(50),<br>
+                        &nbsp;&nbsp;email <span class="keyword">VARCHAR</span>(100)<br>
+                        );
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>DML (Data Manipulation Language)</h3>
+                    <p>Para manipular la información: seleccionar, insertar, actualizar y eliminar datos.</p>
+                    <div class="sql-example">
+                        <span class="keyword">SELECT</span> nombre, email <span class="keyword">FROM</span> Clientes <br>
+                        <span class="keyword">WHERE</span> edad > <span class="string">25</span>;
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>DCL (Data Control Language)</h3>
+                    <p>Para gestionar roles y permisos de acceso a la base de datos.</p>
+                    <div class="sql-example">
+                        <span class="keyword">GRANT SELECT, INSERT</span> <br>
+                        <span class="keyword">ON</span> Clientes <br>
+                        <span class="keyword">TO</span> usuario1;
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="acid">
+            <h2>Propiedades ACID</h2>
+            <p>Las bases de datos SQL se adhieren estrictamente a las propiedades ACID, que garantizan que las transacciones se procesen de manera precisa y confiable.</p>
+            
+            <div class="acid-container">
+                <div class="acid-item">
+                    <h4>Atomicidad (Atomicity)</h4>
+                    <p>Las transacciones son "todo o nada": se completan todas las operaciones o ninguna.</p>
+                </div>
+                <div class="acid-item">
+                    <h4>Consistencia (Consistency)</h4>
+                    <p>Cada transacción lleva la base de datos de un estado válido a otro estado válido.</p>
+                </div>
+                <div class="acid-item">
+                    <h4>Aislamiento (Isolation)</h4>
+                    <p>Las transacciones concurrentes no interfieren entre sí.</p>
+                </div>
+                <div class="acid-item">
+                    <h4>Durabilidad (Durability)</h4>
+                    <p>Los cambios confirmados persisten incluso ante fallos del sistema.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="escalabilidad">
+            <h2>Escalabilidad y Rendimiento</h2>
+            
+            <h3>Escalabilidad</h3>
+            <p>Las bases de datos SQL generalmente emplean <strong>escalabilidad vertical</strong>, que implica aumentar los recursos de un único servidor (CPU, RAM, etc.).</p>
+            <p>El escalamiento horizontal (fragmentación) es posible, pero puede ser más costoso o complejo en comparación con NoSQL.</p>
+            
+            <h3>Rendimiento</h3>
+            <p>Están optimizadas para consultas y transacciones complejas. El motor de la base de datos utiliza un <strong>optimizador de consultas</strong> para determinar la forma más eficiente de ejecutar una sentencia SQL.</p>
+        </section>
+        
+        <section id="casos-uso">
+            <h2>Casos de Uso Típicos</h2>
+            <p>Las bases de datos SQL son ideales para sistemas donde la integridad y consistencia de los datos son críticas:</p>
+            
+            <ul>
+                <li>Sistemas financieros (bancos, procesamiento de pagos)</li>
+                <li>Sistemas ERP (Planificación de Recursos Empresariales)</li>
+                <li>Sistemas CRM (Gestión de Relaciones con Clientes)</li>
+                <li>Comercio electrónico</li>
+                <li>Aplicaciones de reservas (hoteles, vuelos)</li>
+                <li>Escenarios que requieren un uso extensivo de uniones y agregaciones para informes y análisis</li>
+            </ul>
+        </section>
+        
+        <section id="referencias">
+            <h2>Referencias</h2>
+            
+            <div class="reference">
+                <h4>Astera Equipo de análisis. (2025, March 12). SQL vs. NoSQL: 5 diferencias principales. Blog Astera.</h4>
+            </div>
+            
+            <div class="reference">
+                <h4>Giménez, J. A. (2019). Buenas prácticas en el diseño de bases de datos. ARANDU-UTIC – Revista Científica Internacional, VI(1), 193–209.</h4>
+            </div>
+            
+            <div class="reference">
+                <h4>Lopez, Y. (2021). ¿SQL o NoSQL? ¿Cuál base de datos es mejor?. EDteam.</h4>
+            </div>
+            
+            <div class="reference">
+                <h4>Reddit. (n.d.). Duda sobre PostgreSQL vs MongoDB [Online forum post]. r/PostgreSQL.</h4>
+            </div>
+            
+            <div class="reference">
+                <h4>Sánchez Hernández, J. J. (2023). Práctica 15. Bases de datos no relacionales (NoSQL) (Apuntes de BD para DAW, DAM y ASIR).</h4>
+            </div>
+            
+            <div class="reference">
+                <h4>Wikipedia contributors. (2024, April 19). SQL. Wikipedia, la enciclopedia libre.</h4>
+            </div>
+            
+            <div class="reference">
+                <h4>Wikipedia contributors. (2024, September 22). NoSQL. Wikipedia, la enciclopedia libre.</h4>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Página informativa sobre Bases de Datos SQL</p>
+            <p>Basado en el documento proporcionado: "Las fuentes definen las bases de datos SQL.pdf"</p>
+        </div>
+    </footer>
+</body>
+</html>
